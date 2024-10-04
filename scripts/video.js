@@ -15,7 +15,7 @@ const displayCategories = (categories) =>{
     // create a button
     const buttonContainer = document.createElement("div");
     buttonContainer.innerHTML = `
-    <button onclick ="lodeCategoryVideos(${item.category_id})" class="btn">${item.category}</button>
+    <button id="btn-${item.category_id}" onclick ="lodeCategoryVideos(${item.category_id})" class="btn category-btn">${item.category}</button>
     `
     // add button to category container
     categoryContainer.append(buttonContainer);
@@ -27,8 +27,25 @@ const displayCategories = (categories) =>{
 const lodeCategoryVideos = (id) =>{
 fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
 .then((res) => res.json())
-.then((data) => displayVideo(data.category))
+.then((data) => {
+  // every active class remove
+  removeActiveClass();
+  // id er class active
+  const activeBtn = document.getElementById(`btn-${id}`);
+  activeBtn.classList.add("active");
+  displayVideo(data.category);
+  
+})
 .catch((error) => console.log(error))
+}
+
+// add remove button color function
+const removeActiveClass = () =>{
+const buttons = document.getElementsByClassName("category-btn");
+console.log(buttons);
+for(let btn of buttons){
+  btn.classList.remove("active");
+}
 }
 
 
