@@ -13,13 +13,24 @@ const displayCategories = (categories) =>{
    categories.forEach((item) => {
     console.log(item);
     // create a button
-    const button = document.createElement("button");
-    button.classList ="btn";
-    button.innerText = item.category;
+    const buttonContainer = document.createElement("div");
+    buttonContainer.innerHTML = `
+    <button onclick ="lodeCategoryVideos(${item.category_id})" class="btn">${item.category}</button>
+    `
     // add button to category container
-    categoryContainer.append(button);
+    categoryContainer.append(buttonContainer);
   }) 
 }
+
+
+// click button function
+const lodeCategoryVideos = (id) =>{
+fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+.then((res) => res.json())
+.then((data) => displayVideo(data.category))
+.catch((error) => console.log(error))
+}
+
 
 // video section
 const loadVideo = () =>{
@@ -28,8 +39,23 @@ const loadVideo = () =>{
   .then((data) => displayVideo(data.videos))
   .catch((error) => console.log(error))
 }
+
 const displayVideo = (videos) =>{
   const videoContainer = document.getElementById("videos");
+  videoContainer.innerHTML = "" ;
+   if(videos.length == 0){
+      videoContainer.classList.remove("grid");
+      videoContainer.innerHTML =`
+     <div class="min-h-[300px] flex flex-col gap-5 justify-center items-center">
+       <img src="assets/Icon.png"/>
+       <h2>Oops!! Sorry, There is no content here</h2>
+     </div>
+    `;
+    return
+   }
+   else{
+    videoContainer.classList.add("grid");
+   }
   videos.forEach((video) =>{
     console.log(video);
     
@@ -54,7 +80,7 @@ const displayVideo = (videos) =>{
       video.authors[0].verified == true?`<img class="w-5" src="https://img.icons8.com/?size=96&id=D9RtvkuOe31p&format=png" />`:""      
      }
      ${
-      video.others.posted_date?.length == 0 ? "":`<span class="absolute right-3 bottom-20 bg-black rounded p-1 text-white text-xs">${video.others.posted_date}</span>`
+      video.others.posted_date?.length == 0 ? "":`<span class="absolute right-3 bottom-20 bg-black rounded p-1 text-white text-xs">${getTimeString(video.others.posted_date)}</span>`
      }
 
      
@@ -65,6 +91,17 @@ const displayVideo = (videos) =>{
     `;
     videoContainer.append(card);
   })
+}
+
+// time function
+
+function getTimeString(time){
+  // get hour and rest section
+  const hour = parseInt(time/3600);
+  let remainingSecond = time % 3600;
+  const minute = parseInt(remainingSecond / 60);
+  remainingSecond = remainingSecond % 60;
+  return`${hour} hour ${minute} minute ${remainingSecond} second ago`;
 }
 
 
