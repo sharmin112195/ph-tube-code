@@ -51,8 +51,8 @@ for(let btn of buttons){
 
 
 // video section
-const loadVideo = (searchText ="") =>{
-  fetch(` https://openapi.programming-hero.com/api/phero-tube/videos? title = ${searchText}`)
+const loadVideo =(searchText ="") =>{
+  fetch(`https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`)
   .then((res) => res.json())
   .then((data) => displayVideo(data.videos))
   .catch((error) => console.log(error))
